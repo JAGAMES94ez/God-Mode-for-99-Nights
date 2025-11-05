@@ -1,0 +1,53 @@
+--// Script seguro de teste local no Roblox Studio
+--// Cria um botão com cantos arredondados chamado "God Mode"
+
+-- Serviços
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoid = character:WaitForChild("Humanoid")
+
+-- Interface
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "GodModeUI"
+ScreenGui.ResetOnSpawn = false
+ScreenGui.Parent = player:WaitForChild("PlayerGui")
+
+-- Botão
+local Button = Instance.new("TextButton")
+Button.Size = UDim2.new(0, 140, 0, 40)
+Button.Position = UDim2.new(0.5, -70, 0.8, 0)
+Button.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+Button.TextColor3 = Color3.new(1, 1, 1)
+Button.Text = "God Mode"
+Button.Font = Enum.Font.GothamBold
+Button.TextSize = 18
+Button.AutoButtonColor = true
+Button.Parent = ScreenGui
+
+-- Cantos arredondados
+local Corner = Instance.new("UICorner")
+Corner.CornerRadius = UDim.new(0, 12)
+Corner.Parent = Button
+
+-- Estado do modo
+local godModeAtivo = false
+
+-- Função de ativar/desativar
+Button.MouseButton1Click:Connect(function()
+	godModeAtivo = not godModeAtivo
+	if godModeAtivo then
+		Button.BackgroundColor3 = Color3.fromRGB(0, 255, 100)
+		Button.Text = "God Mode: ON"
+		-- Loop que mantém a vida no máximo
+		task.spawn(function()
+			while godModeAtivo and humanoid do
+				humanoid.Health = humanoid.MaxHealth
+				task.wait(0.1)
+			end
+		end)
+	else
+		Button.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+		Button.Text = "God Mode: OFF"
+	end
+end)
